@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.Config.DBConnection;
+import org.example.Entity.CandidateVoteCount;
 import org.example.Entity.VoteTypeCount;
 import org.example.Service.DataRetriever;
 
@@ -32,6 +33,17 @@ public class Main {
                             v.getVoteType() + " | " + v.getCount()
                     )
             );
+
+            System.out.println("=== Question 3 - Votes valides par candidat ===");
+            List<CandidateVoteCount> candidateVotes = dataRetriever.countValidVotesByCandidate(connection);
+            System.out.print("Résultat: [");
+            for (int i = 0; i < candidateVotes.size(); i++) {
+                System.out.print(candidateVotes.get(i));
+                if (i < candidateVotes.size() - 1) {
+                    System.out.print(", ");
+                }
+            }
+            System.out.println("]\n");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

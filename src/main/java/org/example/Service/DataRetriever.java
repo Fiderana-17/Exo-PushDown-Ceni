@@ -1,5 +1,6 @@
 package org.example.Service;
 
+import org.example.Entity.CandidateVoteCount;
 import org.example.Entity.VoteTypeCount;
 
 import java.sql.Connection;
@@ -44,6 +45,29 @@ public class DataRetriever {
                         rs.getString("vote_type"),
                         (int) rs.getLong("count")
                 ));
+            }
+        }
+
+        return results;
+    }
+
+    public List<CandidateVoteCount> countValidVotesByCandidate(Connection connection) throws SQLException {
+        String sql = "SELECT c.name AS candidate_name, " +
+                "COUNT(CASE WHEN v.vote_type = 'VALID' THEN 1 END) AS valid_vote " +
+                "FROM candidate c " +
+                "LEFT JOIN vote v ON c.id = v.candidate_id " +
+                "GROUP BY c.id, c.name " +
+                "ORDER BY c.id";
+
+        List<CandidateVoteCount> results = new ArrayList<>();
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String candidateName = rs.getString("candidate_name");
+                int validVoteCount = rs.getInt("valid_vote");
+                results.add(new CandidateVoteCount(candidateName, validVoteCount));
             }
         }
 
