@@ -92,4 +92,20 @@ public class DataRetriever {
 
         return new VoteSummary(0, 0, 0);
     }
+
+    public double computeTurnoutRate(Connection connection) throws SQLException {
+        String sql = "SELECT " +
+                "(SELECT COUNT(*) FROM vote) * 100.0 / " +
+                "(SELECT COUNT(*) FROM voter) AS turnout_rate";
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                return rs.getDouble("turnout_rate");
+            }
+        }
+
+        return 0.0;
+    }
 }

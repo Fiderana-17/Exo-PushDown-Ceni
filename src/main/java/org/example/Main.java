@@ -49,6 +49,12 @@ public class Main {
             System.out.println("=== Question 4 - Synthèse globale ===");
             VoteSummary summary = dataRetriever.computeVoteSummary(connection);
             System.out.println("Résultat: " + summary + "\n");
+
+            // Test 5
+            System.out.println("=== Question 5 - Taux de participation ===");
+            double turnoutRate = dataRetriever.computeTurnoutRate(connection);
+            System.out.printf("Résultat: %.2f%%\n\n", turnoutRate);
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
