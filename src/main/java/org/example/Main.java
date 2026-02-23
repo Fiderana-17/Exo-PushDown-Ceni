@@ -1,10 +1,12 @@
 package org.example;
 
 import org.example.Config.DBConnection;
+import org.example.Entity.VoteTypeCount;
 import org.example.Service.DataRetriever;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -19,6 +21,17 @@ public class Main {
             long totalVote = dataRetriever.countAllVotes(connection);
 
             System.out.println("totalVote = " + totalVote);
+
+            System.out.println("---- Q2 : Votes par type ----");
+
+            List<VoteTypeCount> results =
+                    dataRetriever.countVotesByType(connection);
+
+            results.forEach(v ->
+                    System.out.println(
+                            v.getVoteType() + " | " + v.getCount()
+                    )
+            );
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
