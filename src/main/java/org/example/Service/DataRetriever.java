@@ -1,12 +1,10 @@
 package org.example.Service;
 
 import org.example.Entity.CandidateVoteCount;
+import org.example.Entity.VoteSummary;
 import org.example.Entity.VoteTypeCount;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,5 +70,26 @@ public class DataRetriever {
         }
 
         return results;
+    }
+
+    public VoteSummary computeVoteSummary(Connection connection) throws SQLException {
+        String sql = "SELECT " +
+                "COUNT(CASE WHEN vote_type = 'VALID' THEN 1 END) AS valid_count, " +
+                "COUNT(CASE WHEN vote_type = 'BLANK' THEN 1 END) AS blank_count, " +
+                "COUNT(CASE WHEN vote_type = 'NULL' THEN 1 END) AS null_count " +
+                "FROM vote";
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                int validCount = rs.getInt("valid_count");
+                int blankCount = rs.getInt("blank_count");
+                int nullCount = rs.getInt("null_count");
+                return new VoteSummary(validCount, blankCount, nullCount);
+            }
+        }
+
+        return new VoteSummary(0, 0, 0);
     }
 }

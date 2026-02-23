@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.Config.DBConnection;
 import org.example.Entity.CandidateVoteCount;
+import org.example.Entity.VoteSummary;
 import org.example.Entity.VoteTypeCount;
 import org.example.Service.DataRetriever;
 
@@ -17,23 +18,22 @@ public class Main {
 
             DataRetriever dataRetriever = new DataRetriever();
 
+
+            // Test 1
             System.out.println("---- Q1 : Nombre total de votes ----");
-
             long totalVote = dataRetriever.countAllVotes(connection);
-
             System.out.println("totalVote = " + totalVote);
 
+            // Test 2
             System.out.println("---- Q2 : Votes par type ----");
-
-            List<VoteTypeCount> results =
-                    dataRetriever.countVotesByType(connection);
-
+            List<VoteTypeCount> results = dataRetriever.countVotesByType(connection);
             results.forEach(v ->
                     System.out.println(
                             v.getVoteType() + " | " + v.getCount()
                     )
             );
 
+            // Test 3
             System.out.println("=== Question 3 - Votes valides par candidat ===");
             List<CandidateVoteCount> candidateVotes = dataRetriever.countValidVotesByCandidate(connection);
             System.out.print("Résultat: [");
@@ -44,6 +44,11 @@ public class Main {
                 }
             }
             System.out.println("]\n");
+
+            // Test 4
+            System.out.println("=== Question 4 - Synthèse globale ===");
+            VoteSummary summary = dataRetriever.computeVoteSummary(connection);
+            System.out.println("Résultat: " + summary + "\n");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
