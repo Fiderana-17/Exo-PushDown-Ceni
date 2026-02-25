@@ -1,6 +1,7 @@
 package org.example.Service;
 
 import org.example.Entity.CandidateVoteCount;
+import org.example.Entity.ElectionResult;
 import org.example.Entity.VoteSummary;
 import org.example.Entity.VoteTypeCount;
 
@@ -107,5 +108,28 @@ public class DataRetriever {
         }
 
         return 0.0;
+    }
+
+    public static ElectionResult findWinner(Connection connection) throws SQLException {
+        String sql = "SELECT c.name AS candidate_name, " +
+                "COUNT(v.id) AS valid_vote_count " +
+                "FROM candidate c " +
+                "LEFT JOIN vote v ON c.id = v.candidate_id " +
+                "AND v.vote_type = 'VALID' " +
+                "GROUP BY c.id, c.name " +
+                "ORDER BY valid_vote_count DESC " +
+                "LIMIT 1";
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                String candidateName = rs.getString("candidate_name");
+                int validVoteCount = rs.getInt("valid_vote_count");
+                return new ElectionResult(candidateName, validVoteCount);
+            }
+        }
+
+        return new ElectionResult("No winner", 0);
     }
 }

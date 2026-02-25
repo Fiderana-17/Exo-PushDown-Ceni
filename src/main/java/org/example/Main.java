@@ -2,10 +2,12 @@ package org.example;
 
 import org.example.Config.DBConnection;
 import org.example.Entity.CandidateVoteCount;
+import org.example.Entity.ElectionResult;
 import org.example.Entity.VoteSummary;
 import org.example.Entity.VoteTypeCount;
 import org.example.Service.DataRetriever;
 
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -54,6 +56,11 @@ public class Main {
             System.out.println("=== Question 5 - Taux de participation ===");
             double turnoutRate = dataRetriever.computeTurnoutRate(connection);
             System.out.printf("Résultat: %.2f%%\n\n", turnoutRate);
+
+            // Test 6
+            System.out.println("=== Question 6 - Résultat élection ===");
+            ElectionResult winner = DataRetriever.findWinner(connection);
+            System.out.println("Résultat: " + winner);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
